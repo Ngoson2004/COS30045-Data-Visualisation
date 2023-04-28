@@ -1,0 +1,23 @@
+/* Chart 1 */
+/* If the bar has the start point lower than the end point, it will have green color */
+#chart1
+{
+    height: 100vh;
+}
+
+.positive
+{
+    fill: green;
+}
+
+.negative
+{
+    fill: red;
+}
+
+/* Chart 2 */
+circle:not(:hover)
+{
+    opacity: 0.2;
+
+}
