@@ -12,7 +12,7 @@ var chart = d3.select("#chart2")
 .attr("transform","translate(" + 200 + "," + 0 + ")");
 
 // Parse the Data
-d3.csv("data.csv").then(function(data) {
+d3.csv("../csv/data.csv").then(function(data) {
 data.forEach(function(d) {
     d.max = +d.max;
 });
@@ -45,7 +45,7 @@ chart.append("g")
 chart.append("text")
     .attr("text-anchor", "end")
     .attr("x", w/2)
-    .attr("y", height + 45)
+    .attr("y", h + 45)
     .text("AUD")
     .style("font-size", "18px")
     .attr("font-family","Times New Roman")
@@ -97,6 +97,7 @@ chart.selectAll("mycircle")
 .attr("cy", function(d) { return y(d.expense); })
 .attr("r", "4")
 .style("fill", "#0000b3")
+.style('opacity', 1)
 .on("mouseover", function (event, d) {
   // Remove any existing tooltips
     chart.selectAll(".tooltip").remove();
@@ -137,6 +138,7 @@ chart.selectAll("mycircle")
 .attr("cy", function(d) { return y(d.expense); })
 .attr("r", "4")
 .style("fill", "#009fff")
+.style('opacity', 1)
 .on("mouseover", function (event, d) {
   // Remove any existing tooltips
   chart.selectAll(".tooltip").remove();
@@ -179,6 +181,7 @@ chart.selectAll("mycircle")
 .attr("cy", function(d) { return y(d.expense); })
 .attr("r", "4")
 .style("fill", "#00ffff")
+.style('opacity', 1)
 .on("mouseover", function (event, d) {
   // Remove any existing tooltips
   chart.selectAll(".tooltip").remove();

@@ -1,14 +1,19 @@
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar
+{
+    display: none;
+}
+
 html,
 body {
     height: 100%;
     margin: 0;
+    padding: 0;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-/* Heading */
-header
-{
-    text-align: center;
+    background-color: #FAF9F6;
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
 }
 
 /* Navigation */
@@ -16,13 +21,11 @@ nav
 {
     background-color: #292929;
     position: absolute;
-    top: 160px;
     right: 0;
     left: 0;
     width: 100%;
     display: table;
     margin: 0 auto;
-    transform: translateY(-70%);
     padding-top: 10px;
     padding-bottom: 5px;
 }
@@ -118,14 +121,179 @@ main
 {
     position: absolute;
     top: 200px;
+    padding: 0;
+}
+
+/* Hero section - Begin */
+.hero-component
+{
+    height: 80vh;
+}
+
+/* Hero section - Illustration */
+.illustration
+{
+    position: relative;
+}
+
+#illustration
+{
+    position: absolute;
+    max-width: 80%; /* Set the maximum width of the image to 100% */
+    height: auto; /* Maintain the aspect ratio of the image */
+    left: 20%;
+}
+
+/* Hero section - Header Begin */
+#illustration-header
+{
+    margin-top: 15%;
+    margin-left: 30%;
+    font-size: 60px;
+    font-weight: 700;
+    color: rgba(108,99,255,255);
+}
+
+#illustration-sub-header
+{
+    margin-top: 10%;
+    margin-left: 30%;
+}
+
+#illustration-sub-header span
+{
+    color:rgb(140,140,252);
+    font-style: italic;
+}
+/* Hero section - Header - End */
+/* Hero section - End */
+
+/* Hero Section - Button - Begin */
+.button
+{
+    margin-top: 5%;
+    margin-left: 30%;
+}
+/* Button 1 */
+#button1
+{
+    width: 30%;
+    align-items: center;
+    background-color: #6c63fb;
+    border: 1px solid #dbdbdb;
+    border-radius: .375em;
+    cursor: pointer;
+    font-size: 0.9rem;
+    height: 2.5em;
+    justify-content: center;
+    line-height: 1.5;
+    padding: calc(.5em - 1px) 1em;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+}
+
+#button1:active
+{
+    border-color: #4a4a4a;
+    outline: 0;
+}
+  
+#button1:focus
+{
+    border-color: #485fc7;
+    outline: 0;
+}
+  
+#button1:hover
+{
+    border-color: #b5b5b5;
+}
+  
+#button1:focus:not(:active)
+{
+    box-shadow: rgba(72, 95, 199, .25) 0 0 0 .125em;
+}
+
+#button1 a
+{
+    color: white;
+    text-decoration: none;
+}
+
+/* Button 2 */
+#button2
+{
+    width: 30%;
+    margin-left: 20px;
+    width: 30%;
+    align-items: center;
+    background-color: #FAF9F6;
+    border: 1px solid #dbdbdb;
+    border-radius: .375em;
+    cursor: pointer;
+    font-size: 0.9rem;
+    height: 2.5em;
+    justify-content: center;
+    line-height: 1.5;
+    padding: calc(.5em - 1px) 1em;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+}
+
+#button2 a
+{
+    color: #485fc7;
+    text-decoration: none;
+}
+
+#button2:active
+{
+    border-color: #4a4a4a;
+    outline: 0;
+}
+  
+#button2:focus
+{
+    border-color: #485fc7;
+    outline: 0;
+}
+  
+#button2:hover
+{
+    border-color: #b5b5b5;
+}
+  
+#button2:focus:not(:active)
+{
+    box-shadow: rgba(72, 95, 199, .25) 0 0 0 .125em;
+}
+/* Hero Section - Button - End */
+
+/* Chart Section - Begin */
+/* Chart Section - Chart 1 - Begin*/
+#chart1-container
+{
+    width: 100%;
 }
 
 #chart1
 {
     display: inline-block;
 }
-  
-h4
+
+.visualisation-title
 {
-    display: inline-block;
+    text-align: center;
+    padding-top: 20px;
+    height: 10vh;
+    margin-bottom: 40px;
+}
+
+h3 span
+{
+    font-weight: 700;
+    color: #485fc7;
+    font-size: 36px;
 }
