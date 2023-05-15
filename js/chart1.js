@@ -1,8 +1,7 @@
 // Set up the data for the chart
 d3.csv("../csv/statisticsforcanada.csv").then(function(dataset)
 {
-    data = dataset;
-    waterfallChart(data);
+    waterfallChart(dataset);
 })
 
 function waterfallChart(data)
@@ -11,16 +10,6 @@ function waterfallChart(data)
     const margin = {top: 70, right: 30, bottom: 60, left: 80}
     const width = document.querySelector('.col-5').offsetWidth  - margin.left - margin.right;
     const height = document.querySelector('#chart1').offsetHeight * 0.85 - margin.top - margin.bottom;
-    
-    // Set up the x and y scales for the chart
-    const x = d3.scaleBand()
-                .range([0, width])
-                .domain(data.map((d) => d.CensusYears))
-                .paddingInner(0.1);
-                
-    const y = d3.scaleLinear()
-                .domain([0, d3.max(data, (d) => +d.Number)])
-                .range([height, 0]);
 
     // Calculate the starting and ending values for each data point
     let initial = 0;
@@ -28,9 +17,9 @@ function waterfallChart(data)
     {
         if (i == 0)
         {
-            data[i].start = initial;
+            data[i].start = initial + 180000;
             initial += (+data[i].Number);
-            data[i].end = initial;
+            data[i].end = initial ;
         }
         else
         {
@@ -40,8 +29,15 @@ function waterfallChart(data)
         }
     }
 
-    // Set the domain for the y scale based on the starting and ending values
-    y.domain([0, d3.max(data, (d) => d.end)]);
+    // Set up the x and y scales for the chart
+    const x = d3.scaleBand()
+        .range([0, width])
+        .domain(data.map((d) => d.CensusYears))
+        .paddingInner(0.1);
+        
+    const y = d3.scaleLinear()
+        .domain([180000, d3.max(data, (d) => +d.end)])
+        .range([height, 0]);
 
     // Create the SVG element and set its dimensions
     const svg = d3
@@ -58,7 +54,10 @@ function waterfallChart(data)
     .attr("x", width / 2)
     .attr("y", -35)
     .attr("text-anchor", "middle")
-    .text("Population Growth in Canada");
+    .text("Population Growth in Canada")
+    .style("font-size", "24px")
+    .style("font-weight", 700)
+    ;
 
     // Add the axis labels to the chart
     svg.append("g")
@@ -69,11 +68,14 @@ function waterfallChart(data)
                 // .tickValues(["2017-2018", "2019-2020", "2021-2022"])
                 )
         .call(g => g.select(".domain").remove())
-        .attr("transform", `translate(0, ${height})`);
+        .attr("transform", `translate(0, ${height})`)
+        .style("font-weight", 550)
+        .style("color", "#777")
+        ;
     
     svg.selectAll(".tick line")
         .attr("transform", `translate(0, ${-height})`) // move the tick lines to the top of the chart
-        .style("stroke-opacity", 0.2);
+        .style("stroke-opacity", 0);
     
     svg.selectAll(".tick text")
         .attr("fill", "#777")
@@ -88,7 +90,7 @@ function waterfallChart(data)
                     .ticks(data.length * 4))
         .call(g => g.select(".domain").remove()) 
         .selectAll(".tick text")
-        .style("fill", "#777") 
+        .style("color", "#777") 
         .style("visibility", (d, i, nodes) =>
         {
             if (i === 0)
@@ -99,7 +101,8 @@ function waterfallChart(data)
             {
                 return "visible"; 
             }
-        });
+        })
+        .style("font-weight", 550);
         
     svg.selectAll(".tick line")
         .attr("transform", `translate(0, ${-height})`) // move the tick lines to the top of the chart
@@ -108,10 +111,11 @@ function waterfallChart(data)
     // Add the x axis label
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", height + 40)
+        .attr("y", height + 50)
         .attr("text-anchor", "middle")
-        .text("Census Years")
+        .text("CENSUS YEARS")
         .style("font-size", "18px")
+        .style("font-weight", 700)
         .attr("font-family","Times New Roman");
 
     // Add the y axis label
@@ -121,33 +125,10 @@ function waterfallChart(data)
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Number of people")
+        .text("NUMBER OF PEOPLE")
         .attr("font-family","Times New Roman")
-        .attr("font-size", "18px");
-
-    // Add vertical gridlines
-    svg.append("g")
-        .attr("class", "grid")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x)
-        .tickSize(-height)
-        .tickFormat(""))
-        .attr("stroke-width", .5)
-        .attr("opacity", 0.2);
-
-    // Add horizontal gridlines
-    svg.append("g")
-        .attr("class", "grid")
-        .call(d3.axisLeft(y)
-            .tickSize(-width)
-            .tickFormat("")
-        )
-        .attr("x1", 0)
-        .attr("x2", width)
-        .attr("y1", d => y(d))
-        .attr("y2", d => y(d))
-        .attr("stroke-width", .5)
-        .attr("opacity", 0.2);
+        .attr("font-size", "18px")
+        .style("font-weight", 700);
 
     // Add the bars to the chart
     svg
@@ -168,14 +149,43 @@ function waterfallChart(data)
 
             // Emphasize the bar being hovered on
             d3.select(this).style("opacity", 1);
-            svg.selectAll(".bar:not(:hover)").style("opacity", 0.2);
+            svg.selectAll(".bar:not(:hover)").style("opacity", 0.1);
+
+            // Add the label for the line
+            svg.append("text")
+                .attr("id", "hover-label")
+                .attr("x", x(d.CensusYears) + x.bandwidth() / 2)
+                .attr("y", y(d.end) - 10)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "12px")
+                .text(d.Number);
         })
     // When the user not hover on that bar anymore, make every other bars normal again
     .on("mouseout", function (event, d)
         {
             svg.selectAll(".bar").style("opacity", 1);
 
-            d3.select("#tooltip").remove();
+            svg.select("#hover-label")
+                .remove();
         })
     .attr("transform", "translate(0, 0)");
+
+    // Append line to the chart
+    const line = d3.line()
+                    .x(function(d) {return x(d.CensusYears)})
+                    .y(function(d) {return y(d.Number)});
+
+    // Initial the starting point for the line chart on x-axis
+    const adjust = x.bandwidth() / 2;
+
+    // Draw the line on the chart
+    svg.append("path")
+        .datum(data)
+        .attr("class", "line")
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", "blue")
+        .attr("stroke-width", "1")
+        .attr("transform", `translate(${adjust},0)`);
 }
+
