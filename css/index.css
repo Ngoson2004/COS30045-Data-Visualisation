@@ -273,7 +273,7 @@ main
 
 /* Chart Section - Begin */
 /* Chart Section - Chart 1 - Begin*/
-#chart1-container
+#chart1-container-australia, #chart1-container-canada
 {
     width: 100%;
 }
