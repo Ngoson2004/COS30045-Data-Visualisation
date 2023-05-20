@@ -128,67 +128,67 @@ function waterfallChart(data)
         .attr("y", (d) => y(Math.max(d.start, d.end)))
         .attr("width", x.bandwidth())
         // Apply effect that when user hover a bar, other bars will faded
-    .on("mouseover", function (event, d)
-        {
-            // Show a small box about the bar's value being hover on
-            d3.select(this).append("title").text(`${d.Year}: ${d3.format(",")(+d.Total)}`);
-
-            // Emphasize the bar being hovered on
-            d3.select(this).style("opacity", 1);
-            svgAus.selectAll(".bar:not(:hover)").style("opacity", 0.1);
-
-            // Check the class of the bar being hovered on
-            const isNegative = d3.select(this).classed("negative");
-
-            // Calculate the label position based on the class
-            const labelPosition = isNegative ? y(d.end) + 20 : y(d.end) - 10;
-
-            // Add the label for the bar
-            svgAus.append("text")
-                .attr("id", "hover-label")
-                .attr("x", x(d.Year) + x.bandwidth() / 2)
-                .attr("y", labelPosition)
-                .attr("text-anchor", "middle")
-                .attr("font-size", "12px")
-                .text(d3.format(",")(d.Total));
-
-            // Add the circle on the line at the point being hovered
-            const circle = svgAus.append("circle")
-                .attr("class", "line-circle")
-                .attr("r", 4)
-                .style("opacity", 0)
-                .attr("cx", x(d.Year) + x.bandwidth() / 2)
-                .attr("cy", y(d.Total))
-                .style("opacity", 1);
-
-            // Retrieve the id of the current bar to define the year's data in order to draw the pie chart
-            const wantedYear = d3.select(this).attr("id");
-
-            // Draw the pie chart demonstrates the data of the year that the hovered bar represent
-            pieChartData(wantedYear).then(function(data)
+        .on("mouseover", function (event, d)
             {
-                pieChart(data, wantedYear);
-            });
-        })
-    // When the user not hover on that bar anymore, make every other bars normal again
-    .on("mouseout", function (event, d)
-        {
-            // Make all the bar opacity turn back to normal when mouseout
-            svgAus.selectAll(".bar").style("opacity", 1);
+                // Show a small box about the bar's value being hover on
+                d3.select(this).append("title").text(`${d.Year}: ${d3.format(",")(+d.Total)}`);
 
-            // Remove the label of the bar being hovered on of the bar chart
-            svgAus.select("#hover-label").remove();
+                // Emphasize the bar being hovered on
+                d3.select(this).style("opacity", 1);
+                svgAus.selectAll(".bar:not(:hover)").style("opacity", 0.1);
 
-            // Remove the pie chart when mouseout
-            d3.selectAll(".subChart").remove();
-            
-            // Remove the circle on the line of the bar chart when mouseout
-            d3.select(".line-circle").remove();
-            
-        })
-    .transition()
-    .duration(1000)
-    .attr("height", (d) => Math.abs(y(d.start) - y(d.end)));
+                // Check the class of the bar being hovered on
+                const isNegative = d3.select(this).classed("negative");
+
+                // Calculate the label position based on the class
+                const labelPosition = isNegative ? y(d.end) + 20 : y(d.end) - 10;
+
+                // Add the label for the bar
+                svgAus.append("text")
+                    .attr("id", "hover-label")
+                    .attr("x", x(d.Year) + x.bandwidth() / 2)
+                    .attr("y", labelPosition)
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "12px")
+                    .text(d3.format(",")(d.Total));
+
+                // Add the circle on the line at the point being hovered
+                svgAus.append("circle")
+                    .attr("class", "line-circle")
+                    .attr("r", 4)
+                    .attr("cx", x(d.Year) + x.bandwidth() / 2)
+                    .attr("cy", y(d.Total))
+                    .style("opacity", 0.85)
+                    .style("fill", "grey");
+
+                // Remove the previous required pie chart
+                d3.select(".subChart").remove();
+
+                // Retrieve the id of the current bar to define the year's data in order to draw the pie chart
+                const wantedYear = d3.select(this).attr("id");
+
+                // Draw the pie chart demonstrates the data of the year that the hovered bar represent
+                pieChartData(wantedYear).then(function(data)
+                {
+                    pieChart(data, wantedYear);
+                });
+            })
+        // When the user not hover on that bar anymore, make every other bars normal again
+        .on("mouseout", function (event, d)
+            {
+                // Make all the bar opacity turn back to normal when mouseout
+                svgAus.selectAll(".bar").style("opacity", 1);
+
+                // Remove the label of the bar being hovered on of the bar chart
+                svgAus.select("#hover-label").remove();
+                
+                // Remove the circle on the line of the bar chart when mouseout
+                d3.select(".line-circle").remove();
+                
+            })
+        .transition()
+        .duration(1000)
+        .attr("height", (d) => Math.abs(y(d.start) - y(d.end)));
 
     // Append line to the chart
     const line = d3.line()
@@ -339,3 +339,9 @@ function pieChartData(year)
         return extractedData;
     });
 }
+
+// Initialize the pie chart to the first year
+pieChartData("2016").then(function(data)
+{
+    pieChart(data, "2016");
+});

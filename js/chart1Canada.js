@@ -161,10 +161,13 @@ function waterfallChart(data)
             const circle = svg.append("circle")
                 .attr("class", "line-circle")
                 .attr("r", 4)
-                .style("opacity", 0)
                 .attr("cx", x(d.Year) + x.bandwidth() / 2)
                 .attr("cy", y(d.Total))
-                .style("opacity", 1);
+                .style("opacity", 0.85)
+                .style("fill", "grey");
+
+            // Remove the previous required pie chart
+            d3.select(".subChart").remove();
 
             // Retrieve the id of the current bar to define the year's data in order to draw the pie chart
             const wantedYear = d3.select(this).attr("id");
@@ -183,9 +186,6 @@ function waterfallChart(data)
 
             // Remove the label of the bar being hovered on of the bar chart
             svg.select("#hover-label").remove();
-
-            // Remove the pie chart when mouseout
-            d3.select(".subChart").remove();
             
             // Remove the circle on the line of the bar chart when mouseout
             d3.select(".line-circle").remove();
@@ -344,3 +344,9 @@ function pieChartData(year)
         return extractedData;
     });
 }
+
+// Initialize the pie chart to the first year
+pieChartData("2016").then(function(data)
+{
+    pieChart(data, "2016");
+});
