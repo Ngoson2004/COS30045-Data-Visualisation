@@ -16,3 +16,9 @@
     fill: #ff2020;
     color: #ff2020;
 }
+
+.highlighted
+{
+    font-weight: bold;
+    text-decoration: underline;
+}

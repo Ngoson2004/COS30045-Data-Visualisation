@@ -45,8 +45,8 @@ nav a
     transition: 0.2s ease color;
 }
 
-nav a:before,
-nav a:after {
+nav a::before, nav a::after
+{
     content: "";
     position: absolute;
     border-radius: 50%;
@@ -287,7 +287,7 @@ main
 
 /* Chart Section - Begin */
 /* Chart Section - Chart 1 - Begin*/
-#chart1-container
+#chart1-container, #chart2-container
 {
     width: 100%;
 }
@@ -305,4 +305,17 @@ h3 span
     font-weight: 700;
     color: #485fc7;
     font-size: 36px;
+}
+
+#chart1, #subchart1, #chart2, #subchart2
+{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 120px
+}
+
+.col-5
+{
+    padding-left: 24px;
+    padding-right: 24px;
 }

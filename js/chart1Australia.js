@@ -35,11 +35,12 @@ function waterfallChart(data)
     const x = d3.scaleBand()
         .range([0, width])
         .domain(data.map((d) => d.Year))
-        .paddingInner(0.1);
+        .padding(0.15);
         
     const y = d3.scaleLinear()
         .domain([130000, d3.max(data, (d) => +d.end) *1.02 ])
-        .range([height, 0]);
+        .range([height, 0])
+        .nice();
 
     // Create the SVG element and set its dimensions
     const svgAus = d3
@@ -59,8 +60,7 @@ function waterfallChart(data)
     .attr("text-anchor", "middle")
     .text("Population Growth in Australia")
     .style("font-size", "24px")
-    .style("font-weight", 700)
-    ;
+    .style("font-weight", 700);
 
     // Add the x-axis labels to the chart
     svgAus.append("g")
@@ -74,12 +74,12 @@ function waterfallChart(data)
 
     // Add the y-axis labels to the chart
     svgAus.append("g")
+        .call(d3.axisLeft(y)
+            .tickFormat(d3.format(".2s"))
+            .ticks(data.length * 2))
+        .selectAll(".tick text")
         .style("font-size", "14px")
         .attr("font-family","Times New Roman")
-        .call(d3.axisLeft(y)
-                    .tickFormat(d3.format(".2s"))
-                    .ticks(data.length * 2))
-        .selectAll(".tick text")
         .style("color", "#777") 
         // Hide the 0 value of the y-axis
         .style("visibility", (d, i, nodes) =>
@@ -246,6 +246,8 @@ function pieChart(data, year)
         .append("g")
         .attr("transform", `translate(${width / 2}, ${height / 2 + 80})`);
 
+    var arcOver = d3.arc().outerRadius(radius).innerRadius(radius / 2 + 10);
+
     // Define the color scale
     const color = d3.scaleOrdinal(["#7fc97f","#beaed4","#fdc086","#f0027f","#bf5b17","#666666"]);
 
@@ -270,6 +272,26 @@ function pieChart(data, year)
         .attr("d", path)
         .attr("fill", (d, i) => color(i))
         .style("opacity", 0)
+        .attr("id", (d, i) => `${labels[i]}Arc`)
+        .on("mouseover", function (event, d, i)
+        {
+            d3.select(this)
+                .transition()
+                .duration(200)
+                .attr("d", arcOver)
+                .attr("stroke-width", 1);
+            d3.select(this).style("opacity", 1);
+            pieSvgAus.selectAll(".arc:not(:hover)").style("opacity", 0.1);
+        })
+        .on("mouseout", function (event, d, i)
+        {
+            d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("d", path)
+            .attr("stroke", "none");
+            pieSvgAus.selectAll(".arc").style("opacity", 1);
+        })
         .transition()
         .duration(400)
         .style("opacity", 1);
@@ -285,15 +307,15 @@ function pieChart(data, year)
     // // Add a container for the legends for the pie chart ( positioned at the bottom of the pie chart)
     const legendGroup = pieSvgAus.append("g")
         .attr("class","pieChartLegend")
-        .attr("transform", `translate(${-width/2}, ${height / 2})`);
+        .attr("transform", `translate(${-width/2}, ${height / 2 + 100})`);
 
     // Create individual legend container
     const legend = legendGroup.selectAll(".legend")
         .data(labels)
         .enter()
         .append("g")
-        .attr("class", "legend")
-        .attr("transform", (d, i) => `translate(0, ${i * 20})`);
+        .attr("id", (d,i) => `${labels[i]}-legend`)
+        .attr("transform", (d, i) => `translate(0, ${i * 20})`)
 
     // Create the rectangle contain the color to show the label for the arcs
     legend.append("rect")
@@ -304,6 +326,7 @@ function pieChart(data, year)
     // Create the label's category for the arcs
     legend.append("text")
         .attr("class", "pie-legend")
+        .attr("data-arc-id", (d, i) => `${labels[i]}Arc`) 
         .text((d) => d)
         .attr("fill", (d, i) => color(i))
         .attr("x", 20)
@@ -341,7 +364,7 @@ function pieChartData(year)
 }
 
 // Initialize the pie chart to the first year
-pieChartData("2016").then(function(data)
+pieChartData("2021").then(function(data)
 {
-    pieChart(data, "2016");
+    pieChart(data, "2021");
 });

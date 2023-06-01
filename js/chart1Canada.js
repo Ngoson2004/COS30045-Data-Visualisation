@@ -7,11 +7,6 @@ d3.csv("./csv/CanadaData1.csv").then(function(data)
 // Draw waterfall chart
 function waterfallChart(data)
 {
-    if (document.getElementById('AustraliaChart1'))
-    {
-        document.getElementById('AustraliaChart1').remove();
-    }
-
     // Set up the dimensions of the chart
     const margin = {top: 70, right: 30, bottom: 60, left: 80}
     const width = document.querySelector('.col-4').offsetWidth  - margin.left - margin.right;
@@ -250,6 +245,8 @@ function pieChart(data, year)
         .append("g")
         .attr("transform", `translate(${width / 2}, ${height / 2 + 80})`);
 
+    var arcOver = d3.arc().outerRadius(radius).innerRadius(radius / 2 + 10);
+
     // Define the color scale
     const color = d3.scaleOrdinal(["#7fc97f","#beaed4","#fdc086","#f0027f","#bf5b17","#666666"]);
 
@@ -274,6 +271,25 @@ function pieChart(data, year)
         .attr("d", path)
         .attr("fill", (d, i) => color(i))
         .style("opacity", 0)
+        .on("mouseover", function (event, d, i)
+        {
+            d3.select(this)
+                .transition()
+                .duration(200)
+                .attr("d", arcOver)
+                .attr("stroke-width", 1);
+            d3.select(this).style("opacity", 1);
+            pieSvg.selectAll(".arc:not(:hover)").style("opacity", 0.1);
+        })
+        .on("mouseout", function (event, d, i)
+        {
+            d3.select(this)
+            .transition()
+            .duration(200)
+            .attr("d", path)
+            .attr("stroke", "none");
+            pieSvg.selectAll(".arc").style("opacity", 1);
+        })
         .transition()
         .duration(400)
         .style("opacity", 1);
@@ -346,7 +362,7 @@ function pieChartData(year)
 }
 
 // Initialize the pie chart to the first year
-pieChartData("2016").then(function(data)
+pieChartData("2021").then(function(data)
 {
-    pieChart(data, "2016");
+    pieChart(data, "2021");
 });
