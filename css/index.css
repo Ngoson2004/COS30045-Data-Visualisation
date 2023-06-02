@@ -16,6 +16,21 @@ body {
     scrollbar-width: none;
 }
 
+.hidden
+{
+    opacity: 0;
+    filter: blur(5x);
+    transform: translateX(-500px);
+    transition: all 1s;
+}
+
+.show
+{
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+}
+
 /* Navigation */
 nav
 {
